@@ -14,52 +14,85 @@
 *
 **********************************************************************************/
 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 
-func addTwoNumbers(_ list1: [Int], _ list2: [Int]) -> [Int] {
-    let firstList: [Int]
-    let secondList: [Int]
-    
-    if list1.count >= list2.count {
-        firstList = list1
-        secondList = list2
-    } else {
-        firstList = list2
-        secondList = list1
-    }
-    
-    var result = [Int]()
-    
-    var needPlus1 = false
-    
-    for (index,value) in firstList.enumerated() {
-        if index >= secondList.count {
-            let sum = needPlus1 ? value + 1: value
-            result.append(sum % 10)
+public class ListNode {
+    public var val: Int
+    public var next: ListNode?
+    public init() { self.val = 0; self.next = nil; }
+    public init(_ val: Int) { self.val = val; self.next = nil; }
+    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+}
+
+class Solution {
+    func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        var result: ListNode?
+        
+        var list1 = l1
+        var list2 = l2
+        
+        var currentNode: ListNode?
+        var needPlus1 = false
+        
+        repeat {
+            var sum = (list1?.val ?? 0) + (list2?.val ?? 0)
+            if needPlus1 {
+                sum += 1
+            }
+            
+            
+            let node = ListNode(sum % 10)
+            
+            if result == nil {
+                result = node
+            } else {
+                currentNode?.next = node
+            }
+            
+            currentNode = node
+            
             needPlus1 = sum >= 10
-            continue
+            
+            list1 = list1?.next
+            list2 = list2?.next
+        } while list1 != nil || list2 != nil
+        
+        
+        if needPlus1 {
+            currentNode?.next = ListNode(1)
         }
         
-        var sum = value + secondList[index]
-        if needPlus1 {
-            sum += 1
-        }
-        result.append(sum % 10)
-        needPlus1 = sum >= 10
+        return result
+    }
+}
+
+let solution = Solution()
+
+func covert(_ list: [Int]) -> ListNode? {
+    let nodeList = list.map({ ListNode($0) })
+    
+    for (index,val) in nodeList.enumerated() {
+        if index + 1 == nodeList.count { break }
+        val.next = nodeList[index + 1]
     }
     
-    if needPlus1 {
-        result.append(1)
-    }
+    return nodeList.first
+}
+
+
+func covert(_ node: ListNode?) -> [Int] {
+    guard let node = node else { return []}
     
-    return result
+    var list = [Int]()
+    
+    var currentNode: ListNode? = node
+    
+    repeat {
+        guard let node = currentNode else { break }
+        list.append(node.val)
+        currentNode = node.next
+    } while currentNode != nil
+    
+    return list
 }
 
 //
@@ -68,15 +101,14 @@ func addTwoNumbers(_ list1: [Int], _ list2: [Int]) -> [Int] {
 //Output: [7,0,8]
 //Explanation: 342 + 465 = 807.
 
-
-print(addTwoNumbers([2,4,3],[5,6,4]) == [7,0,8])
+print(covert(solution.addTwoNumbers(covert([2,4,3]),covert([5,6,4]))) == [7,0,8])
 
 //Example 2:
 //
 //Input: l1 = [0], l2 = [0]
 //Output: [0]
 
-print(addTwoNumbers([0],[0]) == [0])
+print(covert(solution.addTwoNumbers(covert([0]),covert([0]))) == [0])
 
 
 //Example 3:
@@ -84,4 +116,4 @@ print(addTwoNumbers([0],[0]) == [0])
 //Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
 //Output: [8,9,9,9,0,0,0,1]
 
-print(addTwoNumbers([9,9,9,9,9,9,9],[9,9,9,9]) == [8,9,9,9,0,0,0,1])
+print(covert(solution.addTwoNumbers(covert([9,9,9,9,9,9,9]),covert([9,9,9,9]))) == [8,9,9,9,0,0,0,1])

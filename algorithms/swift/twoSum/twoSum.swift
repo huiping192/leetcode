@@ -19,36 +19,38 @@
 **********************************************************************************/
 
 
-
-func twoSums(_ nums: [Int], _ target: Int) -> [Int] {
-    var result: [Int] = [0,0]
-    
-    for (index,num) in nums.enumerated() {
-        let diff = target - num
+class Solution {
+    func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
+        var result: [Int] = [0,0]
         
-        guard let j = nums.firstIndex(of: diff) else {
-            continue
-        }
-        
-        if j != index {
+        for (index,num) in nums.enumerated() {
+            let diff = target - num
+            
+            guard let j = nums.firstIndex(of: diff) else {
+                continue
+            }
+            
+            if j != index {
+                result[0] = index
+                result[1] = j
+                break
+            }
+            
+            guard let secondIndexs = nums.lastIndex(of: diff),  secondIndexs != index else {
+                continue
+            }
             result[0] = index
-            result[1] = j
-            break
+            result[1] = secondIndexs
+            
+            break;
         }
         
-        guard let secondIndexs = nums.lastIndex(of: diff),  secondIndexs != index else {
-            continue
-        }
-        result[0] = index
-        result[1] = secondIndexs
-       
-        break;
+        return result
     }
-    
-    return result
 }
 
 
+let solution = Solution()
 
 //Example 1:
 //
@@ -56,14 +58,14 @@ func twoSums(_ nums: [Int], _ target: Int) -> [Int] {
 //Output: [0,1]
 //Output: Because nums[0] + nums[1] == 9, we return [0, 1].
 
-print(twoSums([2,7,11,15],9) == [0, 1])
+print(solution.twoSum([2,7,11,15],9) == [0, 1])
 
 //Example 2:
 //
 //Input: nums = [3,2,4], target = 6
 //Output: [1,2]
 
-print(twoSums([3,2,4],6) == [1,2])
+print(solution.twoSum([3,2,4],6) == [1,2])
 
 
 
@@ -72,4 +74,4 @@ print(twoSums([3,2,4],6) == [1,2])
 //Input: nums = [3,3], target = 6
 //Output: [0,1]
 
-print(twoSums([3,3],6) == [0,1])
+print(solution.twoSum([3,3],6) == [0,1])
